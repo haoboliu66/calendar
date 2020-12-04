@@ -2,10 +2,10 @@ server:
   port: 9999
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/calendar?useSSL=false
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: lhb280214
+    url: jdbc:mysql://eu-cdbr-west-03.cleardb.net/heroku_d089f3ca6e8ac20?reconnect=true
+    driver-class-name: com.mysql.jdbc.Driver
+    username: bf82ab67abfa2b
+    password: cedaa35f
 
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
