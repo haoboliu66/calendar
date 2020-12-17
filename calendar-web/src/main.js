@@ -9,9 +9,11 @@ Vue.use(ElementUI, { locale })  // use English as language
 
 
 import axios from 'axios'
-axios.defaults.baseURL = 'http://localhost:9999'
+// axios.defaults.baseURL = 'http://localhost:9999'
+axios.defaults.baseURL = 'https://cloud-calendar.herokuapp.com'
 axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
 axios.defaults.withCredentials = true
+
 axios.defaults.headers.common['token'] = store.getters.getToken
 
 Vue.prototype.$axios = axios
@@ -20,6 +22,7 @@ Vue.prototype.$axios = axios
 Vue.config.productionTip = false
 
 import {post,get} from './utils/http'
+import api from "./api";
 
 Vue.prototype.$post = post;
 Vue.prototype.$get = get;
@@ -36,7 +39,6 @@ router.beforeEach((to, from, next) => {
 })
 
 
-
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
@@ -48,9 +50,12 @@ new Vue({
 
 
 axios.interceptors.request.use(config => {
-//判断是否存在token，如果存在将每个页面header都添加token
-  console.log("interceptors!!")
-  console.log(store.getters.getToken)
+  console.log(config);
+  if(config.url === api.ShareEvent){
+    config.headers['Content-Type'] = 'application/json';
+  }
+
+//add token to header if token exists
   if(store.getters.getToken){
     config.headers.common['token'] = store.getters.getToken;
     console.log("token here:");

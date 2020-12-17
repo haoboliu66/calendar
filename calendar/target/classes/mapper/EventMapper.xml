@@ -4,8 +4,8 @@
   <resultMap id="BaseResultMap" type="com.haoboliu.bean.Event">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="title" jdbcType="VARCHAR" property="title" />
-    <result column="start_time" jdbcType="DATE" property="start" />
-    <result column="end_time" jdbcType="DATE" property="end" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="start" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="end" />
     <result column="location" jdbcType="VARCHAR" property="location" />
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="account_id" jdbcType="INTEGER" property="accountId" />
@@ -15,15 +15,12 @@
   </sql>
 
 
-<!--  <resultMap id="listEventResultMap" type="com.haoboliu.bean.Event">-->
-<!--    <id column="id" jdbcType="INTEGER" property="id" />-->
-<!--    <result column="title" jdbcType="VARCHAR" property="title" />-->
-<!--    <result column="start_time" jdbcType="DATE" property="start" />-->
-<!--    <result column="end_time" jdbcType="DATE" property="end" />-->
-<!--    <result column="location" jdbcType="VARCHAR" property="location" />-->
-<!--    <result column="description" jdbcType="VARCHAR" property="description" />-->
-<!--    <result column="account_id" jdbcType="INTEGER" property="accountId" />-->
-<!--  </resultMap>-->
+  <insert id="addEventToReceiver">
+
+insert into share (owner, event, receiver) values(#{ownerId,jdbcType=INTEGER}, #{eventId,jdbcType=INTEGER}, #{receiverId,jdbcType=INTEGER});
+
+  </insert>
+
 
 
 <!--  DATE_FORMAT(start_time,"%Y-%m-%d %H:%i:%s") as start_time, DATE_FORMAT(end_time,"%Y-%m-%d %H:%i:%s") as end_time -->
@@ -78,7 +75,7 @@
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.haoboliu.bean.Event" useGeneratedKeys="true">
     insert into event (title, start_time, end_time,
       `location`, description, account_id)
-    values (#{title,jdbcType=VARCHAR}, #{start,jdbcType=DATE}, #{end,jdbcType=DATE},
+    values (#{title,jdbcType=VARCHAR}, #{start,jdbcType=TIMESTAMP}, #{end,jdbcType=TIMESTAMP},
       #{location,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{accountId,jdbcType=VARCHAR})
   </insert>
 
@@ -109,10 +106,10 @@
         #{title,jdbcType=VARCHAR},
       </if>
       <if test="start != null">
-        #{startTime,jdbcType=DATE},
+        #{startTime,jdbcType=TIMESTAMP},
       </if>
       <if test="end != null">
-        #{endTime,jdbcType=DATE},
+        #{endTime,jdbcType=TIMESTAMP},
       </if>
       <if test="location != null">
         #{location,jdbcType=VARCHAR},
@@ -132,10 +129,10 @@
         title = #{title,jdbcType=VARCHAR},
       </if>
       <if test="startTime != null">
-        start_time = #{start,jdbcType=DATE},
+        start_time = #{start,jdbcType=TIMESTAMP},
       </if>
       <if test="endTime != null">
-        end_time = #{end,jdbcType=DATE},
+        end_time = #{end,jdbcType=TIMESTAMP},
       </if>
       <if test="location != null">
         `location` = #{location,jdbcType=VARCHAR},
@@ -152,8 +149,8 @@
   <update id="updateByPrimaryKey" parameterType="com.haoboliu.bean.Event">
     update event
     set title = #{title,jdbcType=VARCHAR},
-      start_time = #{start,jdbcType=DATE},
-      end_time = #{end,jdbcType=DATE},
+      start_time = #{start,jdbcType=TIMESTAMP},
+      end_time = #{end,jdbcType=TIMESTAMP},
       `location` = #{location,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
       account_id = #{accountId, jdbcType=INTEGER}

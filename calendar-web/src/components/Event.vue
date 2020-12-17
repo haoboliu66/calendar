@@ -13,15 +13,15 @@
         text-color="#fff"
         active-text-color="#ffd04b">
         <el-submenu index="1">
-          <template slot="title">Profile</template>
-          <el-menu-item index="1-1">details</el-menu-item>
-          <el-menu-item index="1-2">change password</el-menu-item>
+          <template slot="title">Shared</template>
+          <el-menu-item index="1-1">My Shared Events</el-menu-item>
+          <el-menu-item index="1-2" @click="showReceivedTable">Received Events</el-menu-item>
         </el-submenu>
         <el-menu-item index="2">{{$route.query.email}}</el-menu-item>
         <el-menu-item index="3" @click="logout">Log out</el-menu-item>
         <el-menu-item index="4">
           <el-input v-model="searchInput" placeholder="search keywords"></el-input>
-          <!--pop over-->
+          <!--pop over for search result-->
           <el-popover
             @hide="renew"
             width="1000px"
@@ -32,12 +32,49 @@
               <el-table-column width="200" property="end" label="end"></el-table-column>
               <el-table-column width="200" property="location" label="location"></el-table-column>
               <el-table-column width="200" property="description" label="description"></el-table-column>
+              <el-table-column width="200" property="owner" label="owner"></el-table-column>
             </el-table>
             <el-button slot="reference" @click="search">Search</el-button>
           </el-popover>
 
+          <!--checkbox for share all events-->
+          <el-checkbox style="padding-left: 20px; color: white" v-model="shareAllChecked" @change="shareAllSelected">All
+            Events
+          </el-checkbox>
+
+          <!--       share all button   -->
+          <el-popover
+            placement="top"
+            width="160"
+            style="padding-left: 10px"
+            v-model="shareAllButtonVisible">
+            <p>Share all events?</p>
+            <el-input v-model="receiver" placeholder="Username/Email" style="width: 100%"></el-input>
+            <div style="text-align: right; margin: 0">
+              <el-button size="mini" type="text" @click="shareAllButtonVisible = false">cancel</el-button>
+              <el-button type="primary" size="mini" @click="shareAll">confirm</el-button>
+            </div>
+            <el-button :disabled="buttonDisable" slot="reference">Share All</el-button>
+          </el-popover>
+
         </el-menu-item>
       </el-menu>
+
+
+      <!--    received events table   -->
+      <el-table stripe
+                v-bind:class="{receivedTableHide: hideReceivedTable,receivedTableShow: !hideReceivedTable}"
+                max-height="250px"
+                :data="receivedEvents">
+        <el-table-column fixed width="200" property="title" label="title"></el-table-column>
+        <el-table-column width="170" property="start" label="start"></el-table-column>
+        <el-table-column width="170" property="end" label="end"></el-table-column>
+        <el-table-column width="150" property="location" label="location"></el-table-column>
+        <el-table-column width="200" property="description" label="description"></el-table-column>
+        <el-table-column width="85" property="accountId" label="ownerId"></el-table-column>
+        <el-table-column width="150" property="username" label="username"></el-table-column>
+        <el-table-column width="180" property="email" label="email"></el-table-column>
+      </el-table>
 
 
       <!--   calendar   -->
@@ -98,6 +135,25 @@
       <div slot="footer" class="dialog-footer">
         <el-button type="warning" @click="delEvent" v-if="eventForm.id" style="float: left;">Delete</el-button>
         <el-button @click="clearForm">Cancel</el-button>
+
+
+        <!--     share one event button   -->
+        <el-dialog
+          class="shareOne"
+          title="Enter Receiver"
+          :visible.sync="dialogVisible"
+          width="30%"
+          :modal="modal"
+          center>
+          <el-input v-model="receiver" placeholder="Enter Username/Email"></el-input>
+          <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">Cancel</el-button>
+    <el-button type="primary" @click="shareOneEvent">Confirm</el-button>
+<!--     dialogVisible = false  -->
+  </span>
+        </el-dialog>
+        <el-button v-if="eventForm.id" @click="dialogVisible = true">Share</el-button>
+
         <el-button type="primary" @click="saveEvent">Confirm</el-button>
       </div>
     </el-dialog>
@@ -134,6 +190,22 @@
     },
     data() {
       return {
+
+        shareAllChecked: false, // shareAll checkbox
+        receiver: '',
+        shareAllButtonVisible: false, // for shareAll button
+        buttonDisable: true,
+        sharedEvents: [],
+
+
+        receivedEvents: [], // for received events from other users
+        hideReceivedTable: true, // received events table visibility
+
+        editingEvent: '',
+
+        dialogVisible: false, // share button in eventForm
+        modal: false,  // cancel mask when dialog displays
+
         activeIndex: '1',
 
         innerEvent: '',
@@ -172,46 +244,61 @@
           description: "",
           accountId: ""
         },
-        optTitle: '添加事件',
+        optTitle: '',
         searchInput: '',
         gridData: []
-
-
       }
     },
     mounted() {
+      console.log("mounted")
 
       window.addEventListener('beforeunload', () => {
         console.log("before refresh");
         this.$store.commit('setEvents', {events: this.calendarEvents});
-        sessionStorage.setItem('token', JSON.stringify(this.$store.state.token));
+        localStorage.setItem('token', JSON.stringify(this.$store.state.token));
       })
 
+      // --------------------add window reload listener----------------------------------
+
       let cached = store.getters.getEvents;
-      let events = JSON.parse(cached).events;
-      console.log(events);
-      if(events.length > 0){
-        this.calendarEvents = events;
+      console.log(cached);
+      // if no cache, retrieve from backend
+      if (cached == null || cached == undefined || cached.length == 0) {
+
+        //check login state
+        if (store.getters.getToken) {
+          let id = this.$route.query.id
+          this.eventForm.accountId = id;
+          // get all events of the user
+          console.log("request lists");
+          this.getEventsList(id);
+        }
         return;
       }
 
-      //check login state
-      if (store.getters.getToken) {
+      // if cache exists, render events
+      let events = JSON.parse(cached).events;
+      console.log(events);
+      if (events.length > 0) {
+        console.log("load from store");
+        this.calendarEvents = events;
+        return;
+      } else {
         let id = this.$route.query.id
         this.eventForm.accountId = id;
         // get all events of the user
+        console.log("request lists");
         this.getEventsList(id);
-
       }
 
     },
     created() {
-
-
+      console.log("created");
     },
+
     methods: {
       handleSelect(key, keyPath) {
-        console.log(key, keyPath);
+        // console.log(key, keyPath);
       },
 
       getEventsList(id) {
@@ -219,38 +306,46 @@
         axios
           .post(api.ListEvent, params)
           .then(res => {
-            console.log(res)
+            console.log(res);
             let data = res.data.result;
             for (let i = 0; i < data.length; i++) {
               let item = data[i];
-              // let oldEvent = {
-              //   id: item.id,
-              //   title: item.title,
-              //   start: item.start,
-              //   end: item.end,
-              //   location: item.location,
-              //   description: item.description,
-              //   accountId: item.accountId
-              // };
               this.calendarEvents.push(item);
             }
           })
-
       },
-      //create new event
+      /**
+       * create new event by filling in form
+       */
       handleDateClick(arg) {
         this.dialogFormVisible = true;
         this.optTitle = 'New Event';
         this.eventForm.title = '';
-          this.eventForm.id = '';
-          this.eventForm.start = arg.date;
+        this.eventForm.id = '';
+        this.eventForm.start = arg.date;
         this.eventForm.end = arg.date;
         this.eventForm.location = '';
-          this.eventForm.description = '';
+        this.eventForm.description = '';
       },
 
-      // modify event
+      /**
+       *  modify event
+       */
       handleEventClick(info) {
+        if (info.event.end == null || info.event.end == undefined || info.event.end == "") {
+          // fill in end date(drawback of fullCalendar)
+          let targetId = info.event.id;
+          let events = this.calendarEvents;
+          for (let i = 0; i < events.length; i++) {
+            let item = events[i];
+            if (item.id == targetId) {
+              console.log("match");
+              info.event.setEnd(item.end);
+              break;
+            }
+          }
+        }
+
         info.el.style.borderColor = 'red';
         this.dialogFormVisible = true;
         this.optTitle = 'Modify Event';
@@ -263,8 +358,14 @@
           description: info.event.extendedProps.description,
           accountId: this.eventForm.accountId,
         };
+
+        // store editing event for share
+        this.editingEvent = this.eventForm;
+
       },
-      // save an event
+      /**
+       * save an event
+       */
       saveEvent() {
         // attach account id
         this.eventForm.accountId = this.$route.query.id;
@@ -280,27 +381,35 @@
           accountId: this.eventForm.accountId
         };
 
-        if(newEvent.title == null || newEvent.title == ""){
+        // check data completeness
+        if (newEvent.title == null || newEvent.title == "") {
           this.$message.error("incomplete form: Title required");
           return;
         }
-
-        if(newEvent.start == ""|| newEvent.start == null){
+        // check data completeness
+        if (newEvent.start == "" || newEvent.start == null) {
           this.$message.error("incomplete form: Start Date required");
           return;
         }
-
-        if(newEvent.end == ""|| newEvent.end == null){
+        // check data completeness
+        if (newEvent.end == "" || newEvent.end == null) {
           this.$message.error("incomplete form: End Date required");
+          return;
+        }
+        if (newEvent.end.toString() == newEvent.start.toString()) {
+          this.$message.error("Start and End cannot be the same");
           return;
         }
 
         this.innerEvent = '';
 
-        // change date format
-        this.eventForm.start = moment(this.eventForm.start).format('YYYY-MM-DD hh:mm:ss');
-        this.eventForm.end = moment(this.eventForm.end).format('YYYY-MM-DD hh:mm:ss');
+        // change date format ,   hh:mm:ss(12)   HH:mm:ss(24)
+        this.eventForm.start = moment(this.eventForm.start).format('YYYY-MM-DD HH:mm:ss');
+        this.eventForm.end = moment(this.eventForm.end).format('YYYY-MM-DD HH:mm:ss');
 
+        console.log(this.eventForm.end);
+
+        console.log(newEvent.end);
         /*
         {
           headers: {'Content-Type':'application/json' }
@@ -313,9 +422,12 @@
               if (this.eventForm.id === "" || this.eventForm.id === undefined) { //add new event
                 this.eventForm.id = res.data.result.id; //update event id
                 newEvent.id = this.eventForm.id;
+                // newEvent.start = this.eventForm.start;
+                // newEvent.end = this.eventForm.end;
                 this.calendarEvents.push(newEvent);
                 this.$message.success("add success");
-              } else { //Modify
+              } else {
+                //Modify
                 console.log("modify!");
                 this.calendarEvents.forEach((item, index, arr) => {
                   if (item.id == this.eventForm.id) {
@@ -327,6 +439,8 @@
                   }
                 });
                 this.$message.success("modify success");
+                //update store
+                this.$store.commit('setEvents', {events: this.calendarEvents});
               }
 
               this.dialogFormVisible = false;
@@ -335,7 +449,9 @@
             }
           });
       },
-      //Delete event
+      /**
+       * Delete event
+       */
       delEvent() {
         let params = 'id=' + this.eventForm.id;
 
@@ -349,87 +465,214 @@
               });
               this.dialogFormVisible = false;
               this.$message({
-                message: '删除成功！',
+                message: 'Delete success！',
                 type: 'success'
               });
             } else {
               this.$message({
-                message: res.message,
+                message: "Error",
                 type: 'error'
               });
             }
           });
       },
-      //拖动事件
+      /**
+       * drag an event
+       */
       dropEvent(info) {
+        console.log("drag event");
+        console.log(info)
+        let targetId = info.event.id;
+        let events = this.calendarEvents;
+        for (let i = 0; i < events.length; i++) {
+          let item = events[i];
+          if (item.id == targetId) {
+            info.event.setEnd(item.end);
+            break;
+          }
+        }
         this.eventForm = {
           id: info.event.id,
           title: info.event.title,
           start: info.event.start,
-          end: info.event.end
+          end: info.event.end,
+          location: info.event.extendedProps.location,
+          description: info.event.extendedProps.description,
         };
         this.saveEvent();
       },
-
-      clearForm() {
-        this.eventForm.title = '',
-          this.eventForm.location = '',
-          this.eventForm.description = '',
-          this.dialogFormVisible = false
-      },
-
-      // search events by keywords
+      /**
+       * search events by keywords
+       */
       search() {
-        console.log("search!");
         let keyword = this.searchInput;
-        console.log(keyword);
 
-        if(keyword == ""){  //keyword cannot be empty
+        //keyword cannot be empty
+        if (keyword == "" || keyword == undefined || keyword == null) {
           return;
         }
-
         this.$axios({
-          method : 'GET',
-        url : api.SearchEvent,
-          params:{
-          keywords : keyword,
-        }
-
-      }).then(res =>{
-          console.log(res);
+          method: 'GET',
+          url: api.SearchEvent,
+          params: {
+            keywords: keyword,
+          }
+        }).then(res => {
           let data = res.data.result;
-          for(let i = 0; i < data.length; i++){
+          for (let i = 0; i < data.length; i++) {
             let item = data[i];
             let popover = {
               title: item.title,
               start: item.start,
               end: item.end,
               location: item.location,
-              description: item.description
+              description: item.description,
+              owner: item.accountId
             };
+            // push to pop-over table for display after searching
             this.gridData.push(popover);
           }
-
-
-        }).catch(err =>{
-
+        }).catch(err => {
+          this.$message.error("Error");
         })
+      },
 
+      /**
+       * clear event form on cancel
+       */
+      clearForm() {
+        this.eventForm.title = '',
+          this.eventForm.location = '',
+          this.eventForm.description = '',
+          this.dialogFormVisible = false
       },
       // clear pop-over table
-      renew(){
+      renew() {
         this.gridData = [];
       },
-      // user log out
+      /**
+       * checkbox checked, change buttonDisabled to false(button enabled)
+       */
+      shareAllSelected(val) {
+        this.shareAllChecked = val;
+        this.buttonDisable = !val;
+      },
+      /**
+       * share one event using the same API with method shareAll()
+       */
+      shareOneEvent() {
+        this.dialogVisible = false;
+        let receiver = this.receiver;
+        if (receiver == null || receiver == "" || receiver === "") {
+          this.$message.error("Receiver cannot be empty");
+          return;
+        }
+        let oneEvent = this.editingEvent;
+        console.log(oneEvent);
+        let list = [];
+        list.push({
+          id: oneEvent.id, title: oneEvent.title, start: oneEvent.start, end: oneEvent.end,
+          location: oneEvent.location, description: oneEvent.description, accountId: oneEvent.accountId
+        });
+
+        let params = {
+          receiver: receiver,
+          events: list
+        }
+        this.$post(api.ShareEvent, JSON.stringify(params))
+          .then(res => {
+            console.log(res);
+            if (res.code != 200) {
+              this.$message.error("No Such User");
+              return;
+            }
+            let shared = res.result;
+            this.sharedEvents = [];
+            this.receiver = "";
+            for (let i = 0; i < shared.length; i++) {
+              this.sharedEvents.push(shared[i]);
+              // for test
+              this.receivedEvents.push(shared[i]);
+            }
+          })
+
+      },
+      /**
+       * share all current user events to dest username or email;
+       */
+      shareAll() {
+        let receiver = this.receiver;
+        if (receiver == null || receiver == "" || receiver === "") {
+          this.$message.error("Receiver cannot be empty");
+          return;
+        }
+        this.shareAllButtonVisible = false;  // hide pop-over
+        this.shareAllSelected(false); // uncheck all events
+
+        // construct list
+        let eventList = this.calendarEvents;
+        let list = [];
+        for (let i = 0; i < eventList.length; i++) {
+          let item = eventList[i];
+          let e = {
+            id: item.id, title: item.title, start: item.start, end: item.end,
+            location: item.location, description: item.description, accountId: item.accountId
+          };
+          list.push(e);
+        }
+
+        let params = {
+          receiver: receiver,
+          events: list
+        }
+
+        this.$post(api.ShareEvent, JSON.stringify(params))
+          .then(res => {
+            console.log(res);
+            if (res.code != 200) {
+              this.$message.error("No Such User");
+              return;
+            }
+            let shared = res.result;
+            this.sharedEvents = [];
+            for (let i = 0; i < shared.length; i++) {
+              this.sharedEvents.push(shared[i]);
+              // for test
+              this.receivedEvents.push(shared[i]);
+            }
+          })
+      },
+
+      showReceivedTable() {
+        this.hideReceivedTable = !this.hideReceivedTable;
+        console.log(this.hideReceivedTable);
+
+        window.addEventListener('click', () => {
+          // if table is being shown, hide it
+          if (!this.hideReceivedTable) {
+            this.hideReceivedTable = !this.hideReceivedTable;
+          }
+        })
+      },
+
+      /**
+       * user log out
+       */
       logout() {
         axios
           .get(api.Logout)
           .then(res => {
-            console.log(res);
-
-            console.log(store.state.token)
-            //clear token from sessionStorage
+            this.calendarEvents = [];
+            this.sharedEvents = [];  // clear cached shared events
+            //clear token from localStorage
+            console.log("before post-logout");
+            console.log(this.$store.token);
+            console.log(this.$store.events);
             this.$store.commit('del_token')
+            this.$store.commit('delEvents')
+            console.log("after post-logout");
+            console.log(this.$store.token);
+            console.log(this.$store.events);
             this.$router.push('/');
           })
       }
@@ -438,11 +681,8 @@
 
 </script>
 
-<style>
-  html {
-    /*background: url(../assets/bg.png);*/
-  }
 
+<style>
   body {
     margin: 0;
     padding: 0;
@@ -494,4 +734,23 @@
     background: #fff;
     padding: 10px;
   }
+
+  .receivedTableHide {
+    position: fixed;
+    align-self: center;
+    text-align: center;
+    z-index: 999;
+    width: 100%;
+    display: none;
+  }
+
+  .receivedTableShow {
+    position: fixed;
+    align-self: center;
+    text-align: center;
+    z-index: 999;
+    width: 100%;
+  }
+
+
 </style>

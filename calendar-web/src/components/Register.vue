@@ -97,7 +97,7 @@
                 this.clearForm();
                 this.$router.push({path: "/"});
               } else {
-                this.$message.error("Username already exists！");
+                this.$message.error("Email already exists！");
               }
             });
 

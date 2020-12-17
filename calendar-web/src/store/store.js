@@ -12,6 +12,7 @@ export default new Vuex.Store({
   mutations:{
     set_token(state, token) {
       state.token = token
+      localStorage.removeItem("token");
       localStorage.setItem("token", token);
     },
     del_token(state) {
@@ -20,13 +21,18 @@ export default new Vuex.Store({
     },
     setEvents(state,data){
       state.events = data
-      sessionStorage.setItem("events", JSON.stringify(data))
+      localStorage.removeItem("events");
+      localStorage.setItem("events", JSON.stringify(data))
     },
+    delEvents(state){
+      localStorage.removeItem('events')
+      state.events = ''
+    }
 
   },
   getters:{
     getEvents(state){
-      state.events = sessionStorage.getItem("events");
+      state.events = localStorage.getItem("events");
       return state.events;
     },
     getToken(state){

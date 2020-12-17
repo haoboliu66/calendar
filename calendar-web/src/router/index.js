@@ -13,6 +13,15 @@ const router = new Router({
       path: '',
       redirect:'/login'
     },
+
+    {
+      path: '/event',
+      name: 'event',
+      component: Event,
+      meta: {
+        title: 'Event'
+      }
+    },
     {
       path: '/login',
       name: 'Login',
@@ -29,14 +38,7 @@ const router = new Router({
         title: 'Register'
       }
     },
-    {
-      path: '/event',
-      name: 'event',
-      component: Event,
-      meta: {
-        title: ''
-      }
-    },
+
 
   ],
   // history mode instead of hash
@@ -45,6 +47,11 @@ const router = new Router({
 
 
 router.beforeEach((to, from, next) => {
+  if(to.path === '/event'){
+    next();
+    return;
+  }
+
   if(to.path === '/register'){
     next();
     return;
@@ -62,4 +69,5 @@ router.beforeEach((to, from, next) => {
     }
   }
 });
+
 export default router

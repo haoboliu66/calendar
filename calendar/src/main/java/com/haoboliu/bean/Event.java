@@ -1,6 +1,7 @@
 package com.haoboliu.bean;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -12,10 +13,12 @@ public class Event implements Serializable {
 
     private String title;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")  // back to Vue
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") // format from Vue
     private Date start;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")  // back to Vue
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")    // format from Vue
     private Date end;

@@ -11,6 +11,8 @@ const api = {
   DeleteEvent: '/event/deleteEvent',
   ListEvent: '/event/listEvent',
   SearchEvent: '/event/searchEvent',
+  ValidateReceiver: '/event/validateReceiver',
+  ShareEvent: '/event/shareEvent',
 
 }
 export default api
