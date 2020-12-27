@@ -14,7 +14,6 @@
         active-text-color="#ffd04b">
         <el-submenu index="1">
           <template slot="title">Shared</template>
-          <el-menu-item index="1-1">My Shared Events</el-menu-item>
           <el-menu-item index="1-2" @click="showReceivedTable">Received Events</el-menu-item>
         </el-submenu>
         <el-menu-item index="2">{{$route.query.email}}</el-menu-item>
@@ -34,7 +33,7 @@
               <el-table-column width="200" property="description" label="description"></el-table-column>
               <el-table-column width="200" property="owner" label="owner"></el-table-column>
             </el-table>
-            <el-button slot="reference" @click="search">Search</el-button>
+            <el-button slot="reference" icon="el-icon-search" @click="search">Search</el-button>
           </el-popover>
 
           <!--checkbox for share all events-->
@@ -72,8 +71,7 @@
         <el-table-column width="150" property="location" label="location"></el-table-column>
         <el-table-column width="200" property="description" label="description"></el-table-column>
         <el-table-column width="85" property="accountId" label="ownerId"></el-table-column>
-        <el-table-column width="150" property="username" label="username"></el-table-column>
-        <el-table-column width="180" property="email" label="email"></el-table-column>
+        <el-table-column width="200" property="email" label="email"></el-table-column>
       </el-table>
 
 
@@ -149,7 +147,7 @@
           <span slot="footer" class="dialog-footer">
     <el-button @click="dialogVisible = false">Cancel</el-button>
     <el-button type="primary" @click="shareOneEvent">Confirm</el-button>
-<!--     dialogVisible = false  -->
+            <!--     dialogVisible = false  -->
   </span>
         </el-dialog>
         <el-button v-if="eventForm.id" @click="dialogVisible = true">Share</el-button>
@@ -157,7 +155,6 @@
         <el-button type="primary" @click="saveEvent">Confirm</el-button>
       </div>
     </el-dialog>
-
 
   </div>
 </template>
@@ -250,27 +247,39 @@
       }
     },
     mounted() {
-      console.log("mounted")
-
+    },
+    activated() {
       window.addEventListener('beforeunload', () => {
-        console.log("before refresh");
         this.$store.commit('setEvents', {events: this.calendarEvents});
         localStorage.setItem('token', JSON.stringify(this.$store.state.token));
       })
 
       // --------------------add window reload listener----------------------------------
 
+      if (store.getters.getToken) {
+        // get shared events by current account id
+        console.log("! id: " + id);
+        let id = this.$route.query.id;
+        this.eventForm.accountId = id;
+        let params = 'id=' + id;
+        axios.post(api.GetSharedEvent, params)
+          .then(res => {
+            console.log("return shared events: ")
+            console.log(res);
+            let shared = res.data.result;
+            for (let i = 0; i < shared.length; i++) {
+              this.receivedEvents.push(shared[i]);
+            }
+          })
+      }
+
       let cached = store.getters.getEvents;
-      console.log(cached);
       // if no cache, retrieve from backend
       if (cached == null || cached == undefined || cached.length == 0) {
 
         //check login state
         if (store.getters.getToken) {
-          let id = this.$route.query.id
-          this.eventForm.accountId = id;
           // get all events of the user
-          console.log("request lists");
           this.getEventsList(id);
         }
         return;
@@ -287,13 +296,9 @@
         let id = this.$route.query.id
         this.eventForm.accountId = id;
         // get all events of the user
-        console.log("request lists");
         this.getEventsList(id);
       }
 
-    },
-    created() {
-      console.log("created");
     },
 
     methods: {
@@ -306,7 +311,6 @@
         axios
           .post(api.ListEvent, params)
           .then(res => {
-            console.log(res);
             let data = res.data.result;
             for (let i = 0; i < data.length; i++) {
               let item = data[i];
@@ -339,7 +343,6 @@
           for (let i = 0; i < events.length; i++) {
             let item = events[i];
             if (item.id == targetId) {
-              console.log("match");
               info.event.setEnd(item.end);
               break;
             }
@@ -383,21 +386,21 @@
 
         // check data completeness
         if (newEvent.title == null || newEvent.title == "") {
-          this.$message.error("incomplete form: Title required");
+          this.$message.error({message: "incomplete form: Title required", duration: 2000});
           return;
         }
         // check data completeness
         if (newEvent.start == "" || newEvent.start == null) {
-          this.$message.error("incomplete form: Start Date required");
+          this.$message.error({message: "incomplete form: Start Date required", duration: 2000});
           return;
         }
         // check data completeness
         if (newEvent.end == "" || newEvent.end == null) {
-          this.$message.error("incomplete form: End Date required");
+          this.$message.error({message: "incomplete form: End Date required", duration: 2000});
           return;
         }
         if (newEvent.end.toString() == newEvent.start.toString()) {
-          this.$message.error("Start and End cannot be the same");
+          this.$message.error({message: "Start and End cannot be the same", duration: 2000});
           return;
         }
 
@@ -406,10 +409,6 @@
         // change date format ,   hh:mm:ss(12)   HH:mm:ss(24)
         this.eventForm.start = moment(this.eventForm.start).format('YYYY-MM-DD HH:mm:ss');
         this.eventForm.end = moment(this.eventForm.end).format('YYYY-MM-DD HH:mm:ss');
-
-        console.log(this.eventForm.end);
-
-        console.log(newEvent.end);
         /*
         {
           headers: {'Content-Type':'application/json' }
@@ -417,7 +416,6 @@
          */
         axios.post(api.AddEvent, QS.stringify(this.eventForm))
           .then((res) => {
-            console.log(res);
             if (res.data.code === 200) {
               if (this.eventForm.id === "" || this.eventForm.id === undefined) { //add new event
                 this.eventForm.id = res.data.result.id; //update event id
@@ -425,27 +423,27 @@
                 // newEvent.start = this.eventForm.start;
                 // newEvent.end = this.eventForm.end;
                 this.calendarEvents.push(newEvent);
-                this.$message.success("add success");
+                this.$message.success({message: "add success", duration: 2000});
               } else {
                 //Modify
-                console.log("modify!");
+                console.log("modify event!");
                 this.calendarEvents.forEach((item, index, arr) => {
                   if (item.id == this.eventForm.id) {
                     arr[index].title = this.eventForm.title;
                     arr[index].start = this.eventForm.start;
                     arr[index].end = this.eventForm.end;
                     arr[index].location = this.eventForm.location;
-                    arr[index].description = this.eventForm.location;
+                    arr[index].description = this.eventForm.description;
                   }
                 });
-                this.$message.success("modify success");
+                this.$message.success({message: "modify success", duration: 2000});
                 //update store
                 this.$store.commit('setEvents', {events: this.calendarEvents});
               }
 
               this.dialogFormVisible = false;
             } else {
-              this.$message.error("add event fail! ");
+              this.$message.error({message: "add event fail! ", duration: 2000});
             }
           });
       },
@@ -466,12 +464,14 @@
               this.dialogFormVisible = false;
               this.$message({
                 message: 'Delete success！',
-                type: 'success'
+                type: 'success',
+                duration: 2000
               });
             } else {
               this.$message({
                 message: "Error",
-                type: 'error'
+                type: 'error',
+                duration: 2000
               });
             }
           });
@@ -480,8 +480,6 @@
        * drag an event
        */
       dropEvent(info) {
-        console.log("drag event");
-        console.log(info)
         let targetId = info.event.id;
         let events = this.calendarEvents;
         for (let i = 0; i < events.length; i++) {
@@ -506,7 +504,6 @@
        */
       search() {
         let keyword = this.searchInput;
-
         //keyword cannot be empty
         if (keyword == "" || keyword == undefined || keyword == null) {
           return;
@@ -533,7 +530,7 @@
             this.gridData.push(popover);
           }
         }).catch(err => {
-          this.$message.error("Error");
+          this.$message.error({message: "Error", duration: 2000});
         })
       },
 
@@ -564,11 +561,10 @@
         this.dialogVisible = false;
         let receiver = this.receiver;
         if (receiver == null || receiver == "" || receiver === "") {
-          this.$message.error("Receiver cannot be empty");
+          this.$message.error({message: "Receiver cannot be empty", duration: 2000});
           return;
         }
         let oneEvent = this.editingEvent;
-        console.log(oneEvent);
         let list = [];
         list.push({
           id: oneEvent.id, title: oneEvent.title, start: oneEvent.start, end: oneEvent.end,
@@ -579,23 +575,24 @@
           receiver: receiver,
           events: list
         }
-        this.$post(api.ShareEvent, JSON.stringify(params))
+        axios.post(api.ShareEvent, JSON.stringify(params), {
+          headers: {
+            'content-type': 'application/json'
+          }
+        })
           .then(res => {
-            console.log(res);
-            if (res.code != 200) {
-              this.$message.error("No Such User");
+            if (res.data.code != 200) {
+              this.$message.error({message: "No Such User", duration: 2000});
               return;
             }
-            let shared = res.result;
+            let shared = res.data.result;
             this.sharedEvents = [];
             this.receiver = "";
             for (let i = 0; i < shared.length; i++) {
               this.sharedEvents.push(shared[i]);
-              // for test
-              this.receivedEvents.push(shared[i]);
             }
+            this.$message.success({message: "Success: Share event to " + receiver, duration: 2000})
           })
-
       },
       /**
        * share all current user events to dest username or email;
@@ -603,7 +600,7 @@
       shareAll() {
         let receiver = this.receiver;
         if (receiver == null || receiver == "" || receiver === "") {
-          this.$message.error("Receiver cannot be empty");
+          this.$message.error({message: "Receiver cannot be empty", duration: 2000});
           return;
         }
         this.shareAllButtonVisible = false;  // hide pop-over
@@ -626,26 +623,27 @@
           events: list
         }
 
-        this.$post(api.ShareEvent, JSON.stringify(params))
+        axios.post(api.ShareEvent, JSON.stringify(params), {
+          headers: {
+            'content-type': 'application/json'
+          }
+        })
           .then(res => {
-            console.log(res);
-            if (res.code != 200) {
-              this.$message.error("No Such User");
+            if (res.data.code != 200) {
+              this.$message.error({message: "No Such User", duration: 2000});
               return;
             }
-            let shared = res.result;
+            let shared = res.data.result;
             this.sharedEvents = [];
             for (let i = 0; i < shared.length; i++) {
               this.sharedEvents.push(shared[i]);
-              // for test
-              this.receivedEvents.push(shared[i]);
             }
+            this.$message.success({message: "Success: Share all events to " + receiver, duration: 2000})
           })
       },
 
       showReceivedTable() {
         this.hideReceivedTable = !this.hideReceivedTable;
-        console.log(this.hideReceivedTable);
 
         window.addEventListener('click', () => {
           // if table is being shown, hide it
@@ -659,20 +657,22 @@
        * user log out
        */
       logout() {
+        this.calendarEvents = [];
+        this.sharedEvents = [];  // clear cached shared events
+        this.receivedEvents = [];
+        //clear token from localStorage
+        console.log("before post-logout");
+        console.log(this.$store.token);
+        console.log(this.$store.events);
+        this.$store.commit('del_token')
+        this.$store.commit('delEvents')
+        console.log("after post-logout");
+        console.log(this.$store.token);
+        console.log(this.$store.events);
+
         axios
           .get(api.Logout)
           .then(res => {
-            this.calendarEvents = [];
-            this.sharedEvents = [];  // clear cached shared events
-            //clear token from localStorage
-            console.log("before post-logout");
-            console.log(this.$store.token);
-            console.log(this.$store.events);
-            this.$store.commit('del_token')
-            this.$store.commit('delEvents')
-            console.log("after post-logout");
-            console.log(this.$store.token);
-            console.log(this.$store.events);
             this.$router.push('/');
           })
       }

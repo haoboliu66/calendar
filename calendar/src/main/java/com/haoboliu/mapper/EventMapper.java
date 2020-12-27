@@ -1,6 +1,7 @@
 package com.haoboliu.mapper;
 
 import com.haoboliu.bean.Event;
+import com.haoboliu.bean.SharedEvent;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -17,4 +18,5 @@ public interface EventMapper extends MyBatisBaseDao<Event, Integer> {
 
     Integer addEventToReceiver(Integer ownerId, Integer eventId, Integer receiverId);
 
+    List<SharedEvent> getSharedEventByReceiver(String id);
 }

@@ -15,12 +15,34 @@
   </sql>
 
 
+
   <insert id="addEventToReceiver">
-
 insert into share (owner, event, receiver) values(#{ownerId,jdbcType=INTEGER}, #{eventId,jdbcType=INTEGER}, #{receiverId,jdbcType=INTEGER});
-
   </insert>
 
+
+  <resultMap id="SharedEventResultMap" type="com.haoboliu.bean.SharedEvent">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="start" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="end" />
+    <result column="location" jdbcType="VARCHAR" property="location" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="account_id" jdbcType="INTEGER" property="accountId" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+  </resultMap>
+
+<!-- get shared events by receiver id -->
+  <select id="getSharedEventByReceiver" resultMap="SharedEventResultMap">
+    SELECT e.id,title,start_time,end_time, location, description, account_id, username, email
+FROM share s
+JOIN event e
+ON s.event = e.id
+JOIN account a
+ON s.owner = a.id
+WHERE s.receiver = #{id}
+  </select>
 
 
 <!--  DATE_FORMAT(start_time,"%Y-%m-%d %H:%i:%s") as start_time, DATE_FORMAT(end_time,"%Y-%m-%d %H:%i:%s") as end_time -->

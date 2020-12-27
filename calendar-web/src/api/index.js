@@ -13,6 +13,8 @@ const api = {
   SearchEvent: '/event/searchEvent',
   ValidateReceiver: '/event/validateReceiver',
   ShareEvent: '/event/shareEvent',
+  GetSharedEvent: '/event/getSharedEvent',
+  OAuth: '/account/OAuth',
 
 }
 export default api

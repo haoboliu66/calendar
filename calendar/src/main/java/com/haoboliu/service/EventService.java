@@ -87,4 +87,8 @@ public class EventService {
 
         return list;
     }
+
+    public List<SharedEvent> getSharedEventByReceiver(String id) {
+       return eventMapper.getSharedEventByReceiver(id);
+    }
 }

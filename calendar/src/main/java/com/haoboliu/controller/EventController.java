@@ -69,7 +69,6 @@ public class EventController {
     public String listEvent(String id) {
         logger.info("List Events From Account: " + id);
         List<Event> list = eventService.getEventsByUserId(id);
-//        list.forEach(System.out::println);
         ReturnObject returnObject = new ReturnObject(list);
         return JSONObject.toJSONString(returnObject);
     }
@@ -81,7 +80,6 @@ public class EventController {
         ReturnObject returnObject = new ReturnObject(list);
         return JSONObject.toJSONString(returnObject);
     }
-
 
     /**
      * share events to a receiver
@@ -120,17 +118,14 @@ public class EventController {
         return JSONObject.toJSONString(returnObject.setMessage("Share Calendar Success"));
     }
 
-    //  test fastJson
-//    @PostMapping("/shareEvent")
-//    public String shareEvent(@RequestBody JSONObject receiver){
-//        JSONObject jsonObject = JSON.parseObject(receiver.toJSONString());
-//        System.out.println(jsonObject);
-//        System.out.println(jsonObject.get("receiver").getClass());
-//        System.out.println(jsonObject.get("receiver"));
-//        System.out.println(jsonObject.get("events").getClass());
-//        System.out.println(jsonObject.get("events"));
-//        return "";
-//    }
+    @PostMapping("/getSharedEvent")
+    public String getSharedEvent(@RequestParam String id) {
+        logger.info("Receiver Id: " + id);
+        List<SharedEvent> sharedEvents = eventService.getSharedEventByReceiver(id);
+        ReturnObject returnObject = new ReturnObject(sharedEvents);
+        logger.info("sharedEvent Size: " + sharedEvents.size());
+        return JSONObject.toJSONString(returnObject);
+    }
 
     /**
      * check if such receiver exits

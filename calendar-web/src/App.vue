@@ -12,27 +12,20 @@
 <script>
 export default {
   name: 'App',
-  // mounted() {
-  //    // 创建cnzz统计js
-  //   const script = document.createElement('script')
-  //   script.src = `https://s13.cnzz.com/z_stat.php?id=1271767266&web_id=1271767266`
-  //   script.language = 'JavaScript'
-  //   document.body.appendChild(script)
-  // },
   watch: {
     '$route': {
       handler(to, from) {
-        setTimeout(() => { //避免首次获取不到window._czc
+        setTimeout(() => {
           if (window._czc) {
             let location = window.location;
             let contentUrl = location.pathname + location.hash;
             let refererUrl = '/';
-            // 用于发送某个URL的PV统计请求，
+
             window._czc.push(['_trackPageview', contentUrl, refererUrl])
           }
         }, 300)
       },
-      immediate: true  // 首次进入页面即执行
+      immediate: true
     }
   }
 }
