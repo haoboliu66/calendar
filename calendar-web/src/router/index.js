@@ -42,7 +42,7 @@ const router = new Router({
 
   ],
   // history mode instead of hash
-  mode: 'history'
+  // mode: 'history'
 })
 
 

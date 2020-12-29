@@ -194,7 +194,6 @@
         buttonDisable: true,
         sharedEvents: [],
 
-
         receivedEvents: [], // for received events from other users
         hideReceivedTable: true, // received events table visibility
 
@@ -256,48 +255,41 @@
 
       // --------------------add window reload listener----------------------------------
 
-      if (store.getters.getToken) {
-        // get shared events by current account id
-        console.log("! id: " + id);
-        let id = this.$route.query.id;
-        this.eventForm.accountId = id;
-        let params = 'id=' + id;
-        axios.post(api.GetSharedEvent, params)
-          .then(res => {
-            console.log("return shared events: ")
-            console.log(res);
-            let shared = res.data.result;
-            for (let i = 0; i < shared.length; i++) {
-              this.receivedEvents.push(shared[i]);
-            }
-          })
-      }
 
+      const id = this.$route.query.id
       let cached = store.getters.getEvents;
       // if no cache, retrieve from backend
       if (cached == null || cached == undefined || cached.length == 0) {
-
         //check login state
         if (store.getters.getToken) {
           // get all events of the user
           this.getEventsList(id);
         }
-        return;
+      }
+      else{
+        // if cache exists, render events
+        let events = JSON.parse(cached).events;
+        console.log(events);
+        if (events.length > 0) {
+          console.log("load from store");
+          this.calendarEvents = events;
+        } else {
+          this.eventForm.accountId = id;
+          // get all events of the user
+          this.getEventsList(id);
+        }
       }
 
-      // if cache exists, render events
-      let events = JSON.parse(cached).events;
-      console.log(events);
-      if (events.length > 0) {
-        console.log("load from store");
-        this.calendarEvents = events;
-        return;
-      } else {
-        let id = this.$route.query.id
-        this.eventForm.accountId = id;
-        // get all events of the user
-        this.getEventsList(id);
-      }
+      // get shared events by current account id
+      this.eventForm.accountId = id;
+      let params = 'id=' + id;
+      axios.post(api.GetSharedEvent, params)
+        .then(res => {
+          let shared = res.data.result;
+          for (let i = 0; i < shared.length; i++) {
+            this.receivedEvents.push(shared[i]);
+          }
+        })
 
     },
 

@@ -2,72 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f6e5c288-df4c-4bfe-80bb-9761f6146a15" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../calendar-web/build/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/../calendar-web/build/utils.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../calendar-web/build/webpack.base.conf.js" beforeDir="false" afterPath="$PROJECT_DIR$/../calendar-web/build/webpack.base.conf.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../calendar-web/config/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../calendar-web/config/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../calendar-web/dist/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../calendar-web/dist/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../calendar-web/dist/static/css/app.cf65b3c73a50be695acc4855db70e250.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../calendar-web/dist/static/img/gmail.21691b3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../calendar-web/dist/static/js/app.80a12757267ac12329cb.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../calendar-web/dist/static/js/manifest.37a2ecbb1d1b7e6c9ada.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../calendar-web/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../calendar-web/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../calendar-web/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../calendar-web/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../calendar-web/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/../calendar-web/server.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../calendar-web/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../calendar-web/src/App.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../calendar-web/src/api/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../calendar-web/src/api/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../calendar-web/dist/static/js/app.5c19c4c0679dacddd7d4.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../calendar-web/src/components/Event.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../calendar-web/src/components/Event.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../calendar-web/src/components/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../calendar-web/src/components/Login.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../calendar-web/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/../calendar-web/src/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_code_findbugs_jsr305_3_0_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_errorprone_error_prone_annotations_2_3_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_guava_failureaccess_1_0_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_guava_guava_28_1_android.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_guava_listenablefuture_9999_0_empty_to_avoid_conflict_with_guava.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_http_client_google_http_client_1_32_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_j2objc_j2objc_annotations_1_3.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_oauth_client_google_oauth_client_1_30_4.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_xkcoding_http_simple_http_1_0_3.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__io_grpc_grpc_context_1_22_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__io_lettuce_lettuce_core_5_3_4_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__io_netty_netty_buffer_4_1_52_Final.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__io_netty_netty_codec_4_1_52_Final.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__io_netty_netty_common_4_1_52_Final.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__io_netty_netty_handler_4_1_52_Final.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__io_netty_netty_resolver_4_1_52_Final.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__io_netty_netty_transport_4_1_52_Final.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__io_opencensus_opencensus_api_0_24_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__io_opencensus_opencensus_contrib_http_util_0_24_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__io_projectreactor_reactor_core_3_3_10_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__me_zhyd_oauth_JustAuth_1_15_8.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_httpcomponents_httpclient_4_5_12.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_httpcomponents_httpcore_4_4_13.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_checkerframework_checker_compat_qual_2_5_5.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_codehaus_mojo_animal_sniffer_annotations_1_18.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_postgresql_postgresql_9_4_1212.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_reactivestreams_reactive_streams_1_0_3.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_data_redis_2_3_4_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_data_spring_data_commons_2_3_4_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_data_spring_data_keyvalue_2_3_4_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_data_spring_data_redis_2_3_4_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_context_support_5_2_9_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_oxm_5_2_9_RELEASE.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../calendar-web/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../calendar-web/src/router/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/calendar.iml" beforeDir="false" afterPath="$PROJECT_DIR$/calendar.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/haoboliu/controller/AccountController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/haoboliu/controller/AccountController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/haoboliu/controller/AuthController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/haoboliu/controller/EventController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/haoboliu/controller/EventController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/haoboliu/mapper/EventMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/haoboliu/mapper/EventMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/haoboliu/service/EventService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/haoboliu/service/EventService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/mapper/EventMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/mapper/EventMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/haoboliu/controller/AccountController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/haoboliu/controller/AccountController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/haoboliu/controller/AuthController.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/haoboliu/controller/EventController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/haoboliu/controller/EventController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/haoboliu/mapper/EventMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/haoboliu/mapper/EventMapper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/haoboliu/service/EventService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/haoboliu/service/EventService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/mapper/EventMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/mapper/EventMapper.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -200,7 +139,7 @@
       <workItem from="1607258554094" duration="2746000" />
       <workItem from="1607547527136" duration="5567000" />
       <workItem from="1607769740088" duration="34238000" />
-      <workItem from="1608731324123" duration="12016000" />
+      <workItem from="1608731324123" duration="13758000" />
     </task>
     <servers />
   </component>
@@ -380,9 +319,10 @@
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="382" y="137" width="675" height="655" key="StructurePopup/0.0.1440.900@0.0.1440.900" timestamp="1608206270821" />
-    <state x="301" y="0" width="838" height="900" key="search.everywhere.popup" timestamp="1608206205750">
+    <state x="301" y="0" width="838" height="900" key="search.everywhere.popup" timestamp="1609190175833">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="301" y="0" width="838" height="900" key="search.everywhere.popup/0.0.1440.900@0.0.1440.900" timestamp="1608206205750" />
+    <state x="301" y="0" width="838" height="900" key="search.everywhere.popup/0.0.1440.900@0.0.1440.900" timestamp="1609190175833" />
+    <state x="301" y="0" width="838" height="900" key="search.everywhere.popup/0.23.1440.877@0.23.1440.877" timestamp="1609180639817" />
   </component>
 </project>

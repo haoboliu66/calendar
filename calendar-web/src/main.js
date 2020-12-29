@@ -55,12 +55,14 @@ axios.interceptors.request.use(config => {
   }
   return config;
 }, error => {
+  console.log("error? ");
   return Promise.reject(error);
 });
 
 
 // request retry
-axios.defaults.retry = 7;
+axios.defaults.timeout = 15000;
+axios.defaults.retry = 4;
 axios.defaults.retryDelay = 1000;
 axios.interceptors.response.use(undefined, function axiosRetryInterceptor(err) {
   let config = err.config;
@@ -93,12 +95,6 @@ axios.interceptors.response.use(undefined, function axiosRetryInterceptor(err) {
 
 
 
-
-
-
-
-
-
 // axios.interceptors.response.use(
 //   response => {
 //
@@ -113,7 +109,7 @@ axios.interceptors.response.use(undefined, function axiosRetryInterceptor(err) {
 //           this.$store.commit('del_token');
 //           router.replace({
 //             path: '/login',
-//             query: {redirect: router.currentRoute.fullPath}//登录成功后跳入浏览的当前页面
+//             query: {redirect: router.currentRoute.fullPath}
 //           })
 //       }
 //     }
