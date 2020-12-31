@@ -69,7 +69,6 @@
         if (!this.userForm.email) {
           this.$message.error("email cannot be empty！");
           return;
-
         }
         if (this.userForm.email != null) {
           let reg = /^(([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})$/;
@@ -81,12 +80,10 @@
             this.$message.error("password cannot be empty！");
             return;
           }
-
           if (this.userForm.password != this.userForm.confirm) {
             this.$message.error("password not consistent");
             return;
           }
-
           // this.$router.push({ path: "/" }); //for vue test
           this.userForm.password = md5(this.userForm.password);
           axios

@@ -131,7 +131,12 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
+
         <el-button type="warning" @click="delEvent" v-if="eventForm.id" style="float: left;">Delete</el-button>
+        <!--         @click="delEvent" -->
+        <!--        <el-button type="warning" slot="reference" v-if="eventForm.id" style="float: left;">Delete</el-button>-->
+
+
         <el-button @click="clearForm">Cancel</el-button>
 
 
@@ -187,6 +192,8 @@
     },
     data() {
       return {
+
+        deletePopOver: false,
 
         shareAllChecked: false, // shareAll checkbox
         receiver: '',
@@ -265,8 +272,7 @@
           // get all events of the user
           this.getEventsList(id);
         }
-      }
-      else{
+      } else {
         // if cache exists, render events
         let events = JSON.parse(cached).events;
         console.log(events);
@@ -444,7 +450,6 @@
        */
       delEvent() {
         let params = 'id=' + this.eventForm.id;
-
         this.$post(api.DeleteEvent, params)
           .then((res) => {
             if (res.code === 200) {
@@ -505,6 +510,7 @@
           url: api.SearchEvent,
           params: {
             keywords: keyword,
+            accountId: this.eventForm.accountId
           }
         }).then(res => {
           let data = res.data.result;
@@ -562,7 +568,6 @@
           id: oneEvent.id, title: oneEvent.title, start: oneEvent.start, end: oneEvent.end,
           location: oneEvent.location, description: oneEvent.description, accountId: oneEvent.accountId
         });
-
         let params = {
           receiver: receiver,
           events: list
@@ -656,6 +661,7 @@
         console.log("before post-logout");
         console.log(this.$store.token);
         console.log(this.$store.events);
+        localStorage.clear();
         this.$store.commit('del_token')
         this.$store.commit('delEvents')
         console.log("after post-logout");

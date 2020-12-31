@@ -61,7 +61,7 @@ axios.interceptors.request.use(config => {
 
 
 // request retry
-axios.defaults.timeout = 15000;
+axios.defaults.timeout = 30000;
 axios.defaults.retry = 4;
 axios.defaults.retryDelay = 1000;
 axios.interceptors.response.use(undefined, function axiosRetryInterceptor(err) {
