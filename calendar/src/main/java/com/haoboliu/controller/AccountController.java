@@ -28,7 +28,7 @@ public class AccountController {
     private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public String login(@RequestParam("username") String username, @RequestParam("password") String password, HttpSession session) {
+    public String login(@RequestParam("username") String username, @RequestParam("password") String password) {
         logger.info("Username: " + username);
         logger.info("Password: " + password);
         Account account = accountService.selectByUsernameAndPassword(username, password);

@@ -54,12 +54,14 @@ WHERE s.receiver = #{id}
 
 <!-- select events by keywords -->
   <select id="selectByKeyWords" resultMap="BaseResultMap">
-    <bind name="pattern" value="'%' + keyword + '%'" />
+    <bind name="pattern" value="'%' + keywords + '%'" />
     SELECT id, title, start_time, end_time, location, description, account_id
     FROM event
-    WHERE title LIKE #{pattern}
+    WHERE account_id = #{accountId}
+    AND
+    (title LIKE #{pattern}
     or location LIKE #{pattern}
-    or description LIKE #{pattern};
+    or description LIKE #{pattern} );
   </select>
 
 <!--  SELECT id, title, start_time, end_time, location, description, account_id

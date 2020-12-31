@@ -19,7 +19,6 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -74,9 +73,10 @@ public class EventController {
     }
 
     @GetMapping("/searchEvent")
-    public String searchEvent(String keywords) {
+    public String searchEvent(@RequestParam("keywords") String keywords, @RequestParam("accountId") String accountId) {
+        logger.info("AccountId: " + accountId);
         logger.info("Keywords: " + keywords);
-        List<Event> list = eventService.selectByKeyWords(keywords);
+        List<Event> list = eventService.selectByKeyWords(accountId, keywords);
         ReturnObject returnObject = new ReturnObject(list);
         return JSONObject.toJSONString(returnObject);
     }
@@ -102,7 +102,7 @@ public class EventController {
             events.add(e);
         }
         logger.info("Covert Entity Type Done");
-//        // check validity of receiver
+       // check validity of receiver
         Account account = validateReceiver(receiverMsg);
         if (account == null) {
             ReturnObject returnObject = new ReturnObject();
@@ -111,10 +111,8 @@ public class EventController {
         // receiver exists
         logger.info("Receiver Validated");
         Integer receiverId = account.getId();
-
         List<SharedEvent> sharedEvents = eventService.addEventsToReceiver(receiverId, events);
         ReturnObject returnObject = new ReturnObject(sharedEvents);
-
         return JSONObject.toJSONString(returnObject.setMessage("Share Calendar Success"));
     }
 

@@ -50,8 +50,8 @@ public class EventService {
         return eventMapper.deleteByPrimaryKey(Integer.parseInt(eventId));
     }
 
-    public List<Event> selectByKeyWords(String keywords) {
-        return eventMapper.selectByKeyWords(keywords);
+    public List<Event> selectByKeyWords(String accountId, String keywords) {
+        return eventMapper.selectByKeyWords(accountId, keywords);
     }
 
     /**

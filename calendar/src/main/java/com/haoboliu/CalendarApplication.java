@@ -1,7 +1,5 @@
 package com.haoboliu;
 
-import com.haoboliu.service.AccountService;
-import com.interceptor.JwtInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

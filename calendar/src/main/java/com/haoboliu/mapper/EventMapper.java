@@ -14,7 +14,7 @@ public interface EventMapper extends MyBatisBaseDao<Event, Integer> {
 
     List<Event> getEventsByAccountId(String id);
 
-    List<Event> selectByKeyWords(String keywords);
+    List<Event> selectByKeyWords(String accountId, String keywords);
 
     Integer addEventToReceiver(Integer ownerId, Integer eventId, Integer receiverId);
 
